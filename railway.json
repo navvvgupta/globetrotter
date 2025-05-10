@@ -1,0 +1,9 @@
+{
+  "build": {
+    "env": {
+      "JAVA_TOOL_OPTIONS": "-XX:+UseContainerSupport"
+    },
+    "command": "chmod +x mvnw && ./mvnw -B -DskipTests clean install"
+  },
+  "start": "java -jar target/globetrotter-backend-0.0.1-SNAPSHOT.jar"
+}
