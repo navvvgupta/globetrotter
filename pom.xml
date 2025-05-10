@@ -58,6 +58,11 @@
 			<artifactId>java-jwt</artifactId>
 			<version>3.18.2</version> <!-- Latest stable version -->
 		</dependency>
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>42.7.2</version> <!-- or latest stable version -->
+		</dependency>
 
 
 		<dependency>
