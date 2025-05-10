@@ -1,12 +1,10 @@
 package com.example.demo.service;
 
-import com.example.demo.dto.AnswerResponseDto;
-import com.example.demo.dto.QuestionResponseDto;
+import com.example.demo.dto.*;
 import com.example.demo.entity.ChallengeSession;
 import com.example.demo.entity.DestinationDetails;
 import com.example.demo.entity.GameSession;
 import com.example.demo.entity.User;
-import com.example.demo.dto.GameState;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.ChallengeSessionRepository;
 import com.example.demo.repository.DestinationDetailsRepository;
@@ -43,7 +41,6 @@ public class GameSessionService {
                 .incorrectCount(0)
                 .build();
         session = gameSessionRepository.save(session);
-
         GameState gameState = GameState.builder()
                 .totalScore(0)
                 .correctCount(0)
@@ -201,7 +198,7 @@ public class GameSessionService {
         return challenge.getChallengeCode();
     }
 
-    public void acceptChallenge(String challengeCode) {
+    public ChallengeResponseDto acceptChallenge(String challengeCode) {
         ChallengeSession challenge = challengeSessionRepository.findByChallengeCode(challengeCode)
                 .orElseThrow(() -> new IllegalArgumentException("Challenge not found"));
 
@@ -219,6 +216,20 @@ public class GameSessionService {
         challenge.setAccepted(true);
 
         challengeSessionRepository.save(challenge);
+        ChallengeResponseDto challengeResponseDto= ChallengeResponseDto.builder()
+                .timeLimitPerQuestion(activeSessions.get(challenge.getInviterGameSessionId()).getTimeLimitPerQuestion())
+                .totalQuestions(activeSessions.get(challenge.getInviterGameSessionId()).getTotalQuestions())
+                .build();
+        return challengeResponseDto;
+    }
+
+    // In GameSessionService.java
+
+    public List<GameHistoryDto> getRecentGames(Long userId, int limit) {
+        List<GameSession> sessions = gameSessionRepository.findTop5ByUserIdOrderByPlayedAtDesc(userId);
+        return sessions.stream()
+                .map(GameHistoryDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
 }

@@ -31,7 +31,7 @@ public class UserService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        if (password.equals(user.getPassword())) {
+        if (!password.equals(user.getPassword())) {
             throw new IllegalArgumentException("Invalid password");
         }
 

@@ -1,12 +1,18 @@
 package com.example.demo.controller;
 
 import com.example.demo.dto.AnswerResponseDto;
+import com.example.demo.dto.ChallengeResponseDto;
+import com.example.demo.dto.GameHistoryDto;
 import com.example.demo.dto.QuestionResponseDto;
+import com.example.demo.entity.GameSession;
 import com.example.demo.service.GameSessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -58,13 +64,15 @@ public class GameController {
     }
 
     @PostMapping("/challenge/accept")
-    public ResponseEntity<String> acceptChallenge(@RequestParam String challengeCode) {
-        try {
-            gameSessionService.acceptChallenge(challengeCode);
-            return ResponseEntity.ok("Challenge accepted successfully.");
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+    public ResponseEntity<ChallengeResponseDto> acceptChallenge(@RequestParam String challengeCode) {
+            return ResponseEntity.ok(gameSessionService.acceptChallenge(challengeCode));
+    }
+
+    // In GameController.java
+
+    @GetMapping("/history/{userId}")
+    public ResponseEntity<List<GameHistoryDto>> getGameHistory(@PathVariable Long userId) {
+        return ResponseEntity.ok(gameSessionService.getRecentGames(userId, 5));
     }
 }
 
